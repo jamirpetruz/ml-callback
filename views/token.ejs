@@ -1,0 +1,208 @@
+
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Token Mercado Livre</title>
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      display: grid;
+      place-items: center;
+      padding: 24px;
+      font-family: Inter, Arial, sans-serif;
+      background: #f3f5f9;
+      color: #172033;
+    }
+
+    .card {
+      width: 100%;
+      max-width: 520px;
+      padding: 32px;
+      border: 1px solid #e5e9f0;
+      border-radius: 18px;
+      background: #fff;
+      box-shadow: 0 12px 40px rgba(20, 35, 60, 0.07);
+    }
+
+    .icon {
+      display: grid;
+      place-items: center;
+      width: 48px;
+      height: 48px;
+      margin-bottom: 22px;
+      border-radius: 14px;
+      background: #fff3bf;
+      font-size: 25px;
+    }
+
+    h1 {
+      margin: 0 0 10px;
+      font-size: 25px;
+      letter-spacing: -0.7px;
+    }
+
+    .description {
+      margin: 0 0 26px;
+      color: #697386;
+      font-size: 14px;
+      line-height: 1.6;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 9px;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    textarea {
+      display: block;
+      width: 100%;
+      min-height: 105px;
+      padding: 13px;
+      resize: vertical;
+      border: 1px solid #dce2eb;
+      border-radius: 10px;
+      outline: none;
+      font-family: monospace;
+      font-size: 12px;
+      line-height: 1.5;
+      overflow-wrap: anywhere;
+      background: #f8fafc;
+      color: #27364b;
+    }
+
+    textarea:focus {
+      border-color: #d6a900;
+    }
+
+    button, .authorize {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+      min-height: 46px;
+      margin-top: 14px;
+      padding: 12px 16px;
+      border: 0;
+      border-radius: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      text-decoration: none;
+      cursor: pointer;
+      transition: opacity 0.2s;
+    }
+
+    button:hover, .authorize:hover {
+      opacity: 0.88;
+    }
+
+    .primary {
+      color: #27200a;
+      background: #ffe600;
+    }
+
+    .secondary {
+      color: #344054;
+      background: #edf0f5;
+    }
+
+    .error {
+      padding: 13px;
+      margin-bottom: 18px;
+      border-radius: 9px;
+      background: #fff0f0;
+      color: #b42318;
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .success {
+      margin: 0 0 18px;
+      color: #16804a;
+      font-size: 13px;
+      font-weight: 600;
+    }
+
+    .footer {
+      margin-top: 24px;
+      color: #98a2b3;
+      font-size: 11px;
+      text-align: center;
+    }
+  </style>
+</head>
+
+<body>
+  <main class="card">
+    <div class="icon">🔑</div>
+
+    <h1>Token Mercado Livre</h1>
+
+    <p class="description">
+      Autorize sua conta para obter o token de acesso
+      e copiá-lo para sua aplicação de intranet.
+    </p>
+
+    <% if (erro) { %>
+      <div class="error"><%= erro %></div>
+    <% } %>
+
+    <% if (accessToken) { %>
+      <p class="success">✓ Token obtido com sucesso</p>
+
+      <label for="token">Access token</label>
+
+      <textarea id="token" readonly spellcheck="false"><%= accessToken %></textarea>
+
+      <button class="primary" id="copiar" type="button">
+        Copiar token
+      </button>
+
+      <button class="secondary" type="button"
+        onclick="window.location.href='/'">
+        Voltar
+      </button>
+
+      <script>
+        const campo = document.getElementById("token");
+        const botao = document.getElementById("copiar");
+
+        botao.addEventListener("click", async () => {
+          try {
+            await navigator.clipboard.writeText(campo.value);
+            botao.textContent = "✓ Token copiado!";
+          } catch {
+            campo.focus();
+            campo.select();
+
+            const copiado = document.execCommand("copy");
+            botao.textContent = copiado
+              ? "✓ Token copiado!"
+              : "Selecione e copie o token";
+          }
+        });
+      </script>
+
+    <% } else if (authUrl) { %>
+      <a class="authorize primary" href="<%= authUrl %>">
+        Autorizar Mercado Livre
+      </a>
+    <% } %>
+
+    <div class="footer">
+      Acesso destinado à integração interna.
+      Não compartilhe seu token.
+    </div>
+  </main>
+</body>
+</html>
