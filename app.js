@@ -9,10 +9,11 @@ const ML_CLIENT_SECRET = process.env.ML_CLIENT_SECRET
 const ML_REDIRECT_URI = process.env.ML_REDIRECT_URI
 
 const url = `https://auth.mercadolivre.com.br/authorization?response_type=code&client_id=${ML_CLIENT_ID}&redirect_uri=${ML_REDIRECT_URI}`;
+console.log(url)
 
 app.get('/', async (req, res)=>{
-    const CODE = req.params.code
-    const token = await getAccessToken(CODE)
+    const {code} = req.query
+    const token = await getAccessToken(code)
     const response = await testarToken(token)
     return res.json(response)
 })
